@@ -14,9 +14,9 @@ public class Template : Abstract
 
 
     // OVERRIDES
-    override protected void OnValidate()
+    override public void Rebuild()
     {
-        base.OnValidate();
+        base.Rebuild();
     }
 
     override protected void Awake()

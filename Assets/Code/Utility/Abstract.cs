@@ -30,7 +30,7 @@ public class Abstract : MonoBehaviour
 
 
     // OVERRIDES
-    virtual protected void OnValidate() { }
+    virtual public void Rebuild() { }
 
     virtual protected void Awake() { }
 
