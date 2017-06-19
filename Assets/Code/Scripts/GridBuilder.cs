@@ -98,8 +98,18 @@ public class GridBuilder : Abstract
             triangles.Add(newTriangle);
         }
         */
-
-        for(int ix = 0; ix < map.Length; ix++)
+        bool rotateFirst = false;
+        if (((map[0].Length / 2) - 1) % 2 == 0)
+        {
+            if ((map.Length - 1) / 2 % 2 == 1)
+                rotateFirst = true;
+        }
+        else
+        {
+            if ((map.Length - 1) / 2 % 2 == 0)
+                rotateFirst = true;
+        }
+        for (int ix = 0; ix < map.Length; ix++)
         {
             for(int iy =0; iy < map[0].Length; iy++)
             {
@@ -108,48 +118,22 @@ public class GridBuilder : Abstract
                     GameObject newTriangle = Instantiate(TrianglePrefab);
                     newTriangle.transform.parent = gameObject.transform;
                     newTriangle.transform.position = new Vector3(ix*0.5f, -iy * (Mathf.Sqrt(3) / 2), 0);
-
-                    if (((map[0].Length / 2) - 1) % 2 == 0)
+                    if (rotateFirst)
                     {
-                        if((map.Length - 1) / 2 % 2 == 1)
+                        if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
                         {
-                            if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
-                            {
-                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
-                            }
+                            newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                            newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
                         }
-                        else
-                        {
-                            if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
-                            {
-                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
-                            }
-                        }
-                        
                     }
                     else
                     {
-                        if ((map.Length - 1) / 2 % 2 == 0)
+                        if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
                         {
-                            if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
-                            {
-                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
-                            }
-                        }
-                        else
-                        {
-                            if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
-                            {
-                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
-                            }
+                            newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                            newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
-                    
-
                      // Set localPosition
                      // Set color?
                      // Flip vertically?
@@ -159,6 +143,7 @@ public class GridBuilder : Abstract
         }
 
     }
+
 
 
 }
