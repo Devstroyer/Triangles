@@ -109,6 +109,8 @@ public class GridBuilder : Abstract
             if ((map.Length - 1) / 2 % 2 == 0)
                 rotateFirst = true;
         }
+        float moveXposition= map.Length / 2 *0.5f;
+        float moveYposition = (((map[0].Length)/ 2)) * (Mathf.Sqrt(3) / 2) - (Mathf.Sqrt(3) / 3);
         for (int ix = 0; ix < map.Length; ix++)
         {
             for(int iy =0; iy < map[0].Length; iy++)
@@ -117,13 +119,13 @@ public class GridBuilder : Abstract
                 {
                     GameObject newTriangle = Instantiate(TrianglePrefab);
                     newTriangle.transform.parent = gameObject.transform;
-                    newTriangle.transform.position = new Vector3(ix*0.5f, -iy * (Mathf.Sqrt(3) / 2), 0);
+                    newTriangle.transform.localPosition = new Vector3(ix*0.5f-moveXposition, -iy * (Mathf.Sqrt(3) / 2)+moveYposition, 0);
                     if (rotateFirst)
                     {
                         if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
                         {
                             newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                            newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            newTriangle.transform.localPosition = new Vector3(newTriangle.transform.localPosition.x, newTriangle.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
                     else
@@ -131,7 +133,7 @@ public class GridBuilder : Abstract
                         if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
                         {
                             newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
-                            newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            newTriangle.transform.localPosition = new Vector3(newTriangle.transform.localPosition.x, newTriangle.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
                      // Set localPosition
