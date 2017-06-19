@@ -55,8 +55,8 @@ public class GridBuilder : Abstract
     private void BuildMap(int gridRadius)
     {
         // How big will the array with given gridRadius?
-        int horizontalLength = 0;  
-        int verticalLength = 0;
+        int horizontalLength = (2 * gridRadius) - 1;
+        int verticalLength = 2 * (int) Mathf.Ceil(gridRadius / 2f);
 
         // Initialize the array (didn't test so check for silly errors)
         map = new bool[horizontalLength][];
@@ -64,12 +64,29 @@ public class GridBuilder : Abstract
             map[ix] = new bool[verticalLength];
 
         // Fill out the array properly ----------------------------------------------------------------------------- <
+        for (int iy = 0; iy < map[0].Length/2; iy++)
+        {
+            for( int ix = iy; ix < map.Length-iy; ix++)
+            {
+                map[ix][(map[0].Length / 2) - 1 - iy] = true;
+                map[ix][(map[0].Length / 2) + iy] = true;
+            }
+        }
+        if (gridRadius % 2 == 1)
+        {
+            for (int ix = (map[0].Length/2);ix<map.Length; ix+=2)
+            {
+
+                map[ix][0] = false;
+                map[ix][map[0].Length - 1] = false;
+            }
+        }
     }
 
     private void BuildTriangles(bool[][] boolMap)
     {
         triangles = new List<GameObject>();
-
+        /*
         // Iterate through boolMap and spawn triangles ------------------------------------------------------------- <
         for(int i=0; i<Radius; i++)   // create number of triangles equal to Radius. For early debugging, you can change it now to proper iteration :)
         {
@@ -79,6 +96,66 @@ public class GridBuilder : Abstract
             // Set color?
             // Flip vertically?
             triangles.Add(newTriangle);
+        }
+        */
+
+        for(int ix = 0; ix < map.Length; ix++)
+        {
+            for(int iy =0; iy < map[0].Length; iy++)
+            {
+                if (map[ix][iy])
+                {
+                    GameObject newTriangle = Instantiate(TrianglePrefab);
+                    newTriangle.transform.parent = gameObject.transform;
+                    newTriangle.transform.position = new Vector3(ix*0.5f, -iy * (Mathf.Sqrt(3) / 2), 0);
+
+                    if (((map[0].Length / 2) - 1) % 2 == 0)
+                    {
+                        if((map.Length - 1) / 2 % 2 == 1)
+                        {
+                            if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
+                            {
+                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            }
+                        }
+                        else
+                        {
+                            if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
+                            {
+                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        if ((map.Length - 1) / 2 % 2 == 0)
+                        {
+                            if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
+                            {
+                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            }
+                        }
+                        else
+                        {
+                            if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
+                            {
+                                newTriangle.transform.rotation = Quaternion.Euler(0, 0, -180);
+                                newTriangle.transform.position = new Vector3(newTriangle.transform.position.x, newTriangle.transform.position.y + (Mathf.Sqrt(3) / 6), 0);
+                            }
+                        }
+                    }
+                    
+
+                     // Set localPosition
+                     // Set color?
+                     // Flip vertically?
+                     triangles.Add(newTriangle);
+                }
+            }
         }
 
     }
