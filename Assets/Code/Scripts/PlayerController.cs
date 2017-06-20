@@ -6,7 +6,8 @@ using UnityEngine;
 public class PlayerController : Collectible
 {
     // FIELDS
-
+    public GameObject activeGrid;
+    public GameObject activeField;
 
 
     // PROPERTIES
@@ -17,6 +18,11 @@ public class PlayerController : Collectible
     override protected void SetTargetCollection()
     {
         targetCollection = GameManager.Players;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
 
