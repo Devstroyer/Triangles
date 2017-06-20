@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class Abstract : MonoBehaviour
+public abstract class Abstract : MonoBehaviour
 {
     // FIELDS
     private float startTime;
@@ -29,7 +29,7 @@ public class Abstract : MonoBehaviour
 
 
 
-    // OVERRIDES
+    // METHODS
     virtual public void Rebuild() { }
 
     virtual protected void Awake() { }

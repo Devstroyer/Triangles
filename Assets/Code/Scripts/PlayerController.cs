@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class PlayerController : Abstract
+public class PlayerController : Collectible
 {
     // FIELDS
 
@@ -14,21 +14,10 @@ public class PlayerController : Abstract
 
 
     // OVERRIDES
-    override protected void Start()
+    override protected void SetTargetCollection()
     {
-        base.Start();
+        targetCollection = GameManager.Players;
     }
-
-    override protected void Update()
-    {
-        base.Update();
-    }
-
-    override protected void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
 
 
 

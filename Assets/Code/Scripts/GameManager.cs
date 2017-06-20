@@ -8,9 +8,11 @@ public class GameManager : Abstract
     // FIELDS
     public GameObject PlayerPrefab;
     public GameObject CameraPrefab;
+    public GameObject GridPrefab;
 
     private List<GameObject> players;
     private List<GameObject> cameras;
+    private List<GameObject> grids;
 
 
 
@@ -23,17 +25,21 @@ public class GameManager : Abstract
     {
         get { return cameras; }
     }
+    public List<GameObject> Grids
+    {
+        get { return grids; }
+    }
 
-
+    
 
     // OVERRIDES
-    override protected void Start()
+    override protected void Awake()
     {
-        base.Start();
+        base.Awake();
         players = new List<GameObject>();
         cameras = new List<GameObject>();
-        players.Add(Instantiate(PlayerPrefab));
-        cameras.Add(Instantiate(CameraPrefab));
+        grids = new List<GameObject>();
+        
     }
 
 

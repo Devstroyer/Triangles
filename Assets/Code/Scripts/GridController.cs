@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 
-public class GridBuilder : Abstract
+public class GridController : Collectible
 {
     // FIELDS
     public GameObject TrianglePrefab;
     public int Radius;
 
     private bool[][] map;
-    public List<GameObject> triangles;   // made 'public' for debugging. Change to 'private' when you finish :P
-    private int maxRadius = 10;
+    private List<GameObject> triangles;
+    private int maxRadius = 16;
+
 
 
     // PROPERTIES
@@ -19,12 +21,21 @@ public class GridBuilder : Abstract
 
 
     // OVERRIDES
+    override protected void SetTargetCollection()
+    {
+        targetCollection = GameManager.Grids;
+    }
+
     override public void Rebuild()
     {
         base.Rebuild();
         Radius = Mathf.Clamp(Radius, 1, maxRadius);
-        DestroyMap();
-        DestroyTriangles();
+
+        if (map != null)
+            DestroyMap();
+        if (triangles != null)
+            DestroyTriangles();
+
         BuildMap(Radius);
         BuildTriangles(map);
     }
@@ -34,22 +45,16 @@ public class GridBuilder : Abstract
     // METHODS
     private void DestroyMap()
     {
-        if (map != null)
-        {
             for (int ix = 0; ix < map.Length; ix++)
                 map[ix] = null;
             map = null;
-        }
     }
 
     private void DestroyTriangles()
     {
-        if (triangles != null)
-        {
             foreach (GameObject iterator in triangles)
                 DestroyImmediate(iterator);
             triangles = null;
-        }
     }
 
     private void BuildMap(int gridRadius)
@@ -136,10 +141,10 @@ public class GridBuilder : Abstract
                             newTriangle.transform.localPosition = new Vector3(newTriangle.transform.localPosition.x, newTriangle.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
-                     // Set localPosition
-                     // Set color?
-                     // Flip vertically?
-                     triangles.Add(newTriangle);
+                    // Set localPosition
+                    // Set color?
+
+                    triangles.Add(newTriangle);
                 }
             }
         }
