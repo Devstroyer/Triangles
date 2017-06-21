@@ -44,8 +44,8 @@ public class Field : Abstract
                 Vector2 lookAtNeighbor = iterator.transform.position - this.transform.position;   // vector between this field and found neighbor
                 for (int i=1; i<directionAngles.Length; i++)
                 {
-                    float modifiedAngle = (Utility.CcwAngleBetween(Vector2.right, lookAtNeighbor) + this.transform.eulerAngles.z) % 360;
-                    if (modifiedAngle.NearlyEquals(directionAngles[i], 0.1f))   // if angle to the found neighbour resembles any direction
+                    float modifiedAngle = Utility.PositiveMod(Utility.CcwAngleBetween(Vector2.right, lookAtNeighbor) - this.transform.eulerAngles.z, 360);
+                    if (Mathf.Abs(modifiedAngle - directionAngles[i]) < 15)   // if angle to the found neighbour resembles any direction
                     {
                         neighbors[i] = iterator;
                         break;

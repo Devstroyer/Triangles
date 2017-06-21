@@ -35,7 +35,6 @@ public class GameManager : Abstract
         players = new List<PlayerController>();
         cameras = new List<CameraController>();
         grids = new List<GridBuilder>();
-        
     }
 
 
