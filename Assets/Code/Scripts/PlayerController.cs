@@ -9,7 +9,7 @@ public class PlayerController : Abstract
     public KeyCode Red, Green, Blue;
 
     private Directions directionInput;
-    private Field activeField;
+    public Field activeField;
     private bool isMoving;
 
 

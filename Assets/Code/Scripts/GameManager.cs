@@ -6,8 +6,6 @@ using UnityEngine;
 public class GameManager : Abstract
 {
     // FIELDS
-    public GameObject PlayerPrefab, CameraPrefab, GridPrefab;
-
     private List<PlayerController> players;
     private List<CameraController> cameras;
     private List<GridBuilder> grids;

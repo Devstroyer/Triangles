@@ -7,10 +7,12 @@ public class GridBuilder : Abstract
 {
     // FIELDS
     public GameObject FieldPrefab;
+    public List<Field> fields;
+
     public int Radius;
 
     private bool[][] map;
-    public List<Field> fields;
+    
     private int maxRadius = 16;
 
 
