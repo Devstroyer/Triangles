@@ -19,11 +19,6 @@ public class Template : Abstract
         base.Rebuild();
     }
 
-    override protected void Awake()
-    {
-        base.Awake();
-    }
-
     override protected void Start()
     {
         base.Start();
@@ -32,11 +27,6 @@ public class Template : Abstract
     override protected void Update()
     {
         base.Update();
-    }
-
-    override protected void LateUpdate()
-    {
-        base.LateUpdate();
     }
 
     override protected void FixedUpdate()

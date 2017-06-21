@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class CameraController : Collectible
+public class CameraController : Abstract
 {
     // FIELDS
     private Camera cameraComponent;
@@ -19,9 +19,10 @@ public class CameraController : Collectible
 
 
     // OVERRIDES
-    override protected void SetTargetCollection()
+    override protected void Start()
     {
-        targetCollection = GameManager.Cameras;
+        base.Start();
+        GameManager.Cameras.Add(this);
     }
 
 

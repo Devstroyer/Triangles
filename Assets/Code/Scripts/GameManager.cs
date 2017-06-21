@@ -6,26 +6,24 @@ using UnityEngine;
 public class GameManager : Abstract
 {
     // FIELDS
-    public GameObject PlayerPrefab;
-    public GameObject CameraPrefab;
-    public GameObject GridPrefab;
+    public GameObject PlayerPrefab, CameraPrefab, GridPrefab;
 
-    private List<GameObject> players;
-    private List<GameObject> cameras;
-    private List<GameObject> grids;
+    private List<PlayerController> players;
+    private List<CameraController> cameras;
+    private List<GridBuilder> grids;
 
 
 
     // PROPERTIES
-    public List<GameObject> Players
+    public List<PlayerController> Players
     {
         get { return players;  }
     }
-    public List<GameObject> Cameras
+    public List<CameraController> Cameras
     {
         get { return cameras; }
     }
-    public List<GameObject> Grids
+    public List<GridBuilder> Grids
     {
         get { return grids; }
     }
@@ -33,12 +31,12 @@ public class GameManager : Abstract
     
 
     // OVERRIDES
-    override protected void Awake()
+    override protected void Start()
     {
-        base.Awake();
-        players = new List<GameObject>();
-        cameras = new List<GameObject>();
-        grids = new List<GameObject>();
+        base.Start();
+        players = new List<PlayerController>();
+        cameras = new List<CameraController>();
+        grids = new List<GridBuilder>();
         
     }
 

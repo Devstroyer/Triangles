@@ -32,8 +32,6 @@ public abstract class Abstract : MonoBehaviour
     // METHODS
     virtual public void Rebuild() { }
 
-    virtual protected void Awake() { }
-
     virtual protected void Start()
     {
         startTime = Time.time;
@@ -41,8 +39,6 @@ public abstract class Abstract : MonoBehaviour
     }
 
     virtual protected void Update() { }
-
-    virtual protected void LateUpdate() { }
 
     virtual protected void FixedUpdate() { }
 

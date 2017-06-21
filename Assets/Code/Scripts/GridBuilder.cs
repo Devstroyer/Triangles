@@ -3,20 +3,20 @@ using UnityEngine;
 
 
 
-public class GridController : Collectible
+public class GridBuilder : Abstract
 {
     // FIELDS
     public GameObject FieldPrefab;
     public int Radius;
 
     private bool[][] map;
-    public List<GameObject> fields;
+    public List<Field> fields;
     private int maxRadius = 16;
 
 
 
     // PROPERTIES
-    public List<GameObject> Fields
+    public List<Field> Fields
     {
         get { return fields;  }
     }
@@ -24,9 +24,10 @@ public class GridController : Collectible
 
 
     // OVERRIDES
-    override protected void SetTargetCollection()
+    override protected void Start()
     {
-        targetCollection = GameManager.Grids;
+        base.Start();
+        GameManager.Grids.Add(this);
     }
 
     override public void Rebuild()
@@ -47,6 +48,24 @@ public class GridController : Collectible
 
 
     // METHODS
+    public Field GetFieldClosestTo(Vector3 point)
+    {
+        float minimalDistance = float.MaxValue;
+        Field closestField = null;
+
+        foreach (Field iterator in fields)
+        {
+            float currentDistance = Vector3.Distance(point, iterator.transform.position);
+            if (currentDistance < minimalDistance)
+            {
+                minimalDistance = currentDistance;
+                closestField = iterator;
+            }
+        }
+
+        return closestField;
+    }
+
     private void DestroyMap()
     {
         for (int ix = 0; ix < map.Length; ix++)
@@ -56,8 +75,8 @@ public class GridController : Collectible
 
     private void DestroyTriangles()
     {
-        foreach (GameObject iterator in fields)
-            DestroyImmediate(iterator);
+        foreach (Field iterator in fields)
+            DestroyImmediate(iterator.gameObject);
         fields = null;
     }
 
@@ -100,19 +119,8 @@ public class GridController : Collectible
 
     private void BuildTriangles(bool[][] boolMap)
     {
-        fields = new List<GameObject>();
-        /*
-        // Iterate through boolMap and spawn fields ------------------------------------------------------------- <
-        for(int i=0; i<Radius; i++)   // create number of fields equal to Radius. For early debugging, you can change it now to proper iteration :)
-        {
-            GameObject newField = Instantiate(FieldPrefab);
-            newField.transform.parent = gameObject.transform;
-            // Set localPosition
-            // Set color?
-            // Flip vertically?
-            fields.Add(newField);
-        }
-        */
+        fields = new List<Field>();
+
         bool rotateFirst = false;
         if (((map[0].Length / 2) - 1) % 2 == 0)
         {
@@ -154,7 +162,7 @@ public class GridController : Collectible
                     // Set localPosition
                     // Set color?
 
-                    fields.Add(newField);
+                    fields.Add(newField.GetComponent<Field>());
                 }
             }
         }
