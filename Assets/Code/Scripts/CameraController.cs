@@ -6,23 +6,25 @@ using UnityEngine;
 public class CameraController : Abstract
 {
     // FIELDS
-    private Camera cameraComponent;
 
 
 
     // PROPERTIES
-    public Camera CameraComponent
-    {
-        get { return cameraComponent;  }
-    }
 
 
-
+        
     // OVERRIDES
     override protected void Start()
     {
         base.Start();
         GameManager.Cameras.Add(this);
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        this.transform.position = Vector3.Lerp(this.transform.position, GameManager.PlayersMidpoint, 0.05f);
+        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -100);
     }
 
 

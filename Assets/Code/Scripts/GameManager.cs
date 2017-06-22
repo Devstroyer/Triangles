@@ -9,13 +9,14 @@ public class GameManager : Abstract
     private List<PlayerController> players;
     private List<CameraController> cameras;
     private List<GridBuilder> grids;
+    private Vector3 playersMidpoint;
 
 
 
     // PROPERTIES
     public List<PlayerController> Players
     {
-        get { return players;  }
+        get { return players; }
     }
     public List<CameraController> Cameras
     {
@@ -25,8 +26,13 @@ public class GameManager : Abstract
     {
         get { return grids; }
     }
+    public Vector3 PlayersMidpoint
+    {
+        get { return playersMidpoint; }
+    }
 
-    
+
+
 
     // OVERRIDES
     override protected void Start()
@@ -37,9 +43,32 @@ public class GameManager : Abstract
         grids = new List<GridBuilder>();
     }
 
+    protected override void Update()
+    {
+        base.Update();
+        playersMidpoint = GetPlayersMidpoint();
+
+
+
+    }
+
 
 
 
     // METHODS
+    private Vector3 GetPlayersMidpoint()
+    {
+        Vector3 midpoint = Vector3.zero;
+        int count = 0;
+        foreach(PlayerController iterator in players)
+        {
+            midpoint += iterator.transform.position;
+            count++;
+        }
+
+    
+
+        return midpoint / count;
+    }
 
 }
