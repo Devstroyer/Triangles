@@ -3,13 +3,13 @@ using UnityEngine;
 
 
 
-public class PlayerController : Abstract
+public class PlayerComponent : Abstract
 {
     // FIELDS
     public KeyCode Red, Green, Blue;
 
     private Directions directionInput;
-    public Field activeField;
+    public TileComponent activeTile;
     private bool isMoving;
 
 
@@ -22,7 +22,7 @@ public class PlayerController : Abstract
     {
         base.Start();
         GameManager.Players.Add(this);
-        TryMoveTo(GameManager.Grids.Find(o => o != null).GetFieldClosestTo(this.transform.position));
+        TryMoveTo(GameManager.Grids.Find(o => o != null).GetTileClosestTo(this.transform.position));
     }
 
     protected override void Update()
@@ -30,6 +30,8 @@ public class PlayerController : Abstract
         base.Update();
         ReceiveInput();
         ConsumeInput();
+
+        AddDebugLine(transform.position.ToString());
     }
 
 
@@ -49,32 +51,32 @@ public class PlayerController : Abstract
     {
         if (directionInput != Directions.None && !isMoving)
         {
-            TryMoveTo(activeField.GetNeighbors()[(int)directionInput]);
+            TryMoveTo(activeTile.GetNeighbors()[(int)directionInput]);
         }
 
         directionInput = Directions.None;
     }
 
-    private void TryMoveTo(Field targetField)
+    private void TryMoveTo(TileComponent targetTileComponent)
     {
-        if (targetField != null)
-            StartCoroutine(SlowlyMoveTo(targetField));
+        if (targetTileComponent != null)
+            StartCoroutine(SlowlyMoveTo(targetTileComponent));
     }
 
-    private System.Collections.IEnumerator SlowlyMoveTo(Field targetField)
+    private System.Collections.IEnumerator SlowlyMoveTo(TileComponent targetTileComponent)
     {
-        if (targetField != null)
+        if (targetTileComponent != null)
         {
             isMoving = true;
             for (int i = 0; i < 15; i++)
             {
-                this.transform.position = Vector3.Lerp(this.transform.position, targetField.transform.position, 0.2f);
+                this.transform.position = Vector3.Lerp(this.transform.position, targetTileComponent.transform.position, 0.2f);
                 yield return new WaitForSeconds(0.005f);
             }
             isMoving = false;
 
-            activeField = targetField;
-            this.transform.position = activeField.transform.position;
+            activeTile = targetTileComponent;
+            this.transform.position = activeTile.transform.position;
         }
     }
 

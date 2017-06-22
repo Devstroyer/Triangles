@@ -6,8 +6,8 @@ using UnityEngine;
 public abstract class Abstract : MonoBehaviour
 {
     // FIELDS
+    static private GameManagerComponent gameManager;
     private float startTime;
-    private GameManager gameManager;
 
 
 
@@ -22,24 +22,32 @@ public abstract class Abstract : MonoBehaviour
         get { return Time.time - startTime; }
     }
 
-    public GameManager GameManager
+    public GameManagerComponent GameManager
     {
         get { return gameManager; }
     }
 
 
 
-    // METHODS
+    // OVERRIDES
     virtual public void Rebuild() { }
 
     virtual protected void Start()
     {
+        gameManager = FindObjectOfType<GameManagerComponent>();
         startTime = Time.time;
-        gameManager = FindObjectOfType<GameManager>();
     }
 
     virtual protected void Update() { }
 
     virtual protected void FixedUpdate() { }
+
+
+
+    // METHODS
+    protected void AddDebugLine(string text)
+    {
+        gameManager.Canvas.DebugLog.AddLine(text);
+    }
 
 }

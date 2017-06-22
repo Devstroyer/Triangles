@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 
-public class CameraController : Abstract
+public class CameraComponent : Abstract
 {
     // FIELDS
 

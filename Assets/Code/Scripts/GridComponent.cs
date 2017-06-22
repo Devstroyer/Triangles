@@ -3,11 +3,11 @@ using UnityEngine;
 
 
 
-public class GridBuilder : Abstract
+public class GridComponent : Abstract
 {
     // FIELDS
-    public GameObject FieldPrefab;
-    public List<Field> fields;
+    public GameObject TilePrefab;
+    public List<TileComponent> tiles;
 
     public int Radius;
 
@@ -15,12 +15,15 @@ public class GridBuilder : Abstract
     
     private int maxRadius = 16;
 
+    private float maxNeighborDistance;
+    private float[] directionAngles;
+
 
 
     // PROPERTIES
-    public List<Field> Fields
+    public List<TileComponent> TileComponents
     {
-        get { return fields;  }
+        get { return tiles;  }
     }
 
 
@@ -30,6 +33,8 @@ public class GridBuilder : Abstract
     {
         base.Start();
         GameManager.Grids.Add(this);
+        InitializeSettings();
+
     }
 
     override public void Rebuild()
@@ -39,7 +44,7 @@ public class GridBuilder : Abstract
 
         if (map != null)
             DestroyMap();
-        if (fields != null)
+        if (tiles != null)
             DestroyTriangles();
         DestroyChildren();
 
@@ -50,24 +55,56 @@ public class GridBuilder : Abstract
 
 
     // METHODS
-    public Field GetFieldClosestTo(Vector3 point)
+    public void InitializeSettings()
+    {
+        maxNeighborDistance = Mathf.Sqrt(3) / 3 * 1.1f;
+        directionAngles = new float[4];
+        directionAngles[(int)Directions.Red] = 30;
+        directionAngles[(int)Directions.Green] = 150;
+        directionAngles[(int)Directions.Blue] = 270;
+    }
+
+    public TileComponent GetTileClosestTo(Vector3 point)
     {
         float minimalDistance = float.MaxValue;
-        Field closestField = null;
+        TileComponent closestTile = null;
 
-        foreach (Field iterator in fields)
+        foreach (TileComponent iterator in tiles)
         {
             float currentDistance = Vector3.Distance(point, iterator.transform.position);
             if (currentDistance < minimalDistance)
             {
                 minimalDistance = currentDistance;
-                closestField = iterator;
+                closestTile = iterator;
             }
         }
 
-        return closestField;
+        return closestTile;
     }
 
+    public TileComponent[] GetNeighborsOf(TileComponent tile)
+    {
+        TileComponent[] neighbors = new TileComponent[4];
+
+        
+        foreach (TileComponent iterator in tiles)
+            if (iterator != tile && Vector3.Distance(tile.transform.position, iterator.transform.position) < maxNeighborDistance)   // neighbor found
+            {   
+                Vector2 lookAtNeighbor = iterator.transform.position - tile.transform.position;   // vector between this field and found neighbor
+                for (int i=1; i<directionAngles.Length; i++)
+                {
+                    float modifiedAngle = Utility.PositiveMod(Utility.CcwAngleBetween(Vector2.right, lookAtNeighbor) - tile.transform.eulerAngles.z, 360);
+                    if (Mathf.Abs(modifiedAngle - directionAngles[i]) < 15)   // if angle to the found neighbour resembles any direction
+                    {
+                        neighbors[i] = iterator;
+                        break;
+                    }
+                }
+            }
+        
+
+        return neighbors;
+    }
     private void DestroyMap()
     {
         for (int ix = 0; ix < map.Length; ix++)
@@ -77,9 +114,9 @@ public class GridBuilder : Abstract
 
     private void DestroyTriangles()
     {
-        foreach (Field iterator in fields)
+        foreach (TileComponent iterator in tiles)
             DestroyImmediate(iterator.gameObject);
-        fields = null;
+        tiles = null;
     }
 
     private void DestroyChildren()
@@ -121,7 +158,7 @@ public class GridBuilder : Abstract
 
     private void BuildTriangles(bool[][] boolMap)
     {
-        fields = new List<Field>();
+        tiles = new List<TileComponent>();
 
         bool rotateFirst = false;
         if (((map[0].Length / 2) - 1) % 2 == 0)
@@ -142,29 +179,29 @@ public class GridBuilder : Abstract
             {
                 if (map[ix][iy])
                 {
-                    GameObject newField = Instantiate(FieldPrefab);
-                    newField.transform.parent = gameObject.transform;
-                    newField.transform.localPosition = new Vector3(ix*0.5f-moveXposition, -iy * (Mathf.Sqrt(3) / 2)+moveYposition, 0);
+                    GameObject newTileComponent = Instantiate(TilePrefab);
+                    newTileComponent.transform.parent = gameObject.transform;
+                    newTileComponent.transform.localPosition = new Vector3(ix*0.5f-moveXposition, -iy * (Mathf.Sqrt(3) / 2)+moveYposition, 0);
                     if (rotateFirst)
                     {
                         if ((iy % 2 == 0 && ix % 2 == 0) || (iy % 2 == 1 && ix % 2 == 1))
                         {
-                            newField.transform.rotation = Quaternion.Euler(0, 0, -180);
-                            newField.transform.localPosition = new Vector3(newField.transform.localPosition.x, newField.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
+                            newTileComponent.transform.rotation = Quaternion.Euler(0, 0, -180);
+                            newTileComponent.transform.localPosition = new Vector3(newTileComponent.transform.localPosition.x, newTileComponent.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
                     else
                     {
                         if ((iy % 2 == 0 && ix % 2 == 1) || (iy % 2 == 1 && ix % 2 == 0))
                         {
-                            newField.transform.rotation = Quaternion.Euler(0, 0, -180);
-                            newField.transform.localPosition = new Vector3(newField.transform.localPosition.x, newField.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
+                            newTileComponent.transform.rotation = Quaternion.Euler(0, 0, -180);
+                            newTileComponent.transform.localPosition = new Vector3(newTileComponent.transform.localPosition.x, newTileComponent.transform.localPosition.y + (Mathf.Sqrt(3) / 6), 0);
                         }
                     }
                     // Set localPosition
                     // Set color?
 
-                    fields.Add(newField.GetComponent<Field>());
+                    tiles.Add(newTileComponent.GetComponent<TileComponent>());
                 }
             }
         }
