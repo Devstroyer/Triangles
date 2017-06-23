@@ -9,7 +9,7 @@ public class PlayerComponent : Abstract
     public KeyCode Red, Green, Blue;
 
     private Directions directionInput;
-    public TileComponent activeTile;
+    private TileComponent activeTile;
     private bool isMoving;
 
 
@@ -30,8 +30,7 @@ public class PlayerComponent : Abstract
         base.Update();
         ReceiveInput();
         ConsumeInput();
-
-        AddDebugLine(transform.position.ToString());
+        GetComponent<SpriteRenderer>().sortingOrder = (int)(-10*transform.position.y);
     }
 
 

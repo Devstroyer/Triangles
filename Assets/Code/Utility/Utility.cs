@@ -25,6 +25,10 @@ static public class Utility
             list.Add(obj);
     }
 
+    static public void LerpTowards(this Vector3 start, Vector3 target, float speed)
+    {
+        start = Vector3.Lerp(start, target, speed);
+    }
 
 
 }

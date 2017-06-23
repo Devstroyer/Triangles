@@ -23,8 +23,8 @@ public class CameraComponent : Abstract
     protected override void Update()
     {
         base.Update();
-        this.transform.position = Vector3.Lerp(this.transform.position, GameManager.PlayersMidpoint, 0.05f);
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -100);
+        LerpPositionTowards(GameManager.PlayersMidpoint, 0.05f);
+        AddDebugLine(transform.position.ToString());
     }
 
 

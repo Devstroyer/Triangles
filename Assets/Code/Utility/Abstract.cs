@@ -50,4 +50,8 @@ public abstract class Abstract : MonoBehaviour
         gameManager.Canvas.DebugLog.AddLine(text);
     }
 
+    protected void LerpPositionTowards(Vector3 target, float speed)
+    {
+        this.transform.position = Vector3.Lerp(this.transform.position, target, speed);
+    }
 }
