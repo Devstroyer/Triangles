@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class PlayerComponent : Abstract
 {
-    // FIELDS
+    // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
     public KeyCode Red, Green, Blue;
 
-    private Cards cardInput;
-    private TileComponent activeTile;
-    private bool isMoving;
-    private int maxActions;
     private List<Action> actions;
-
-
-
-    // PROPERTIES
     public List<Action> Actions
     {
         get { return actions; }
     }
 
+    private Cards cardInput;
+    private TileComponent activeTile;
+    private bool isMoving;
+    private int maxActions;
+
+
+
+    // -------------------------------------------------------------------------------------------------------------------------------- PROPERTIES
     public bool IsReadyForResolvePhase
     {
         get { return actions.Count >= maxActions; }
@@ -29,7 +29,7 @@ public class PlayerComponent : Abstract
 
 
 
-    // OVERRIDES
+    // -------------------------------------------------------------------------------------------------------------------------------- MONO
     protected override void Start()
     {
         base.Start();
@@ -42,10 +42,15 @@ public class PlayerComponent : Abstract
     protected override void Update()
     {
         base.Update();
+
+        // Manage player input
         ReceiveInput();
         ConsumeInput();
+
+        // Fix sprite sorting order
         GetComponent<SpriteRenderer>().sortingOrder = (int)(-10 * transform.position.y);
 
+        // Debug
         AddDebugLine(name);
         for(int i = 0; i < maxActions; i++)
             AddDebugLine("  " + i + ". " + (actions.Count > i ? actions[i].ToString() : "..."));
@@ -54,7 +59,7 @@ public class PlayerComponent : Abstract
 
 
 
-    // METHODS
+    // -------------------------------------------------------------------------------------------------------------------------------- METHODS
     private void ReceiveInput()
     {
         if(Input.GetKeyDown(Red))
@@ -67,16 +72,13 @@ public class PlayerComponent : Abstract
 
     private void ConsumeInput()
     {
-
-        //if (cardInput != Cards.None && !isMoving)
-        //  
-
         if(cardInput != Cards.None)
             switch(GamePhase)
             {
                 case Phases.Queue:
                     TryEnqueue(Cards.Green, cardInput);
                     break;
+
                 case Phases.Realtime:
                     if(!isMoving)
                         TryMoveTo(activeTile.GetNeighbors()[(int)cardInput]);

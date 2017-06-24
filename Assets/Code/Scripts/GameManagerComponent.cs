@@ -6,36 +6,39 @@ using UnityEngine.UI;
 
 public class GameManagerComponent : Abstract
 {
-    // ---------------------------------------------------------------- FIELDS
-    // PUBLIC
+    // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
+    // Public references to in-editor Prefabs so GameManager knows what to spawn
     public GameObject GridPrefab;
     public GameObject PlayerPrefab;
     public GameObject CameraPrefab;
     public GameObject CanvasPrefab;
     public GameObject PhaseManagerPrefab;
 
-    // READ-ONLY
+    // Read-only references to core gameplay components
     private List<GridComponent> grids;
-    public  List<GridComponent> Grids
+    public List<GridComponent> Grids
     { get { return grids; } }
 
     private List<PlayerComponent> players;
-    public  List<PlayerComponent> Players
+    public List<PlayerComponent> Players
     { get { return players; } }
 
     private new CameraComponent camera;
-    public      CameraComponent Camera
+    public CameraComponent Camera
     { get { return camera; } }
 
     private CanvasComponent canvas;
-    public  CanvasComponent Canvas
+    public CanvasComponent Canvas
     { get { return canvas; } }
 
     private PhaseManagerComponent phaseManager;
-    public  PhaseManagerComponent PhaseManager
+    public PhaseManagerComponent PhaseManager
     { get { return phaseManager; } }
 
-    // PROPERTIES
+
+
+    // -------------------------------------------------------------------------------------------------------------------------------- PROPERTIES
+    // Returns the average position of all players
     public Vector3 PlayersMidpoint
     {
         get
@@ -54,15 +57,16 @@ public class GameManagerComponent : Abstract
 
 
 
-    // ---------------------------------------------------------------- METHODS
-    // MONOBEHAVIOUR
+    // -------------------------------------------------------------------------------------------------------------------------------- MONO
     override protected void Start()
     {
         base.Start();
 
+        // Initialize component collections so later components can collect themselves (duh)
         players = new List<PlayerComponent>();
         grids = new List<GridComponent>();
 
+        // Spawn, save references to and become the parent of some singular components
         camera = Instantiate(CameraPrefab).GetComponent<CameraComponent>();
         camera.transform.SetParent(this.transform);
 
@@ -73,5 +77,8 @@ public class GameManagerComponent : Abstract
         phaseManager.transform.SetParent(this.transform);
     }
 
-    
+
+
+    // -------------------------------------------------------------------------------------------------------------------------------- METHODS
+
 }

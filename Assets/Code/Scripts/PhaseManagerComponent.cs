@@ -22,7 +22,7 @@ public class PhaseManagerComponent : Abstract
     override protected void Start()
     {
         base.Start();
-        gamePhase = Phases.Queue;
+        gamePhase = Phases.Realtime;
         absoluteActionsLimit = 5;
 
     }
