@@ -59,9 +59,9 @@ public class GridComponent : Abstract
     {
         maxNeighborDistance = Mathf.Sqrt(3) / 3 * 1.1f;
         directionAngles = new float[4];
-        directionAngles[(int)Directions.Red] = 30;
-        directionAngles[(int)Directions.Green] = 150;
-        directionAngles[(int)Directions.Blue] = 270;
+        directionAngles[(int)Cards.Red] = 30;
+        directionAngles[(int)Cards.Green] = 150;
+        directionAngles[(int)Cards.Blue] = 270;
     }
 
     public TileComponent GetTileClosestTo(Vector3 point)
@@ -180,7 +180,7 @@ public class GridComponent : Abstract
                 if (map[ix][iy])
                 {
                     GameObject newTileComponent = Instantiate(TilePrefab);
-                    newTileComponent.transform.parent = gameObject.transform;
+                    newTileComponent.transform.SetParent(gameObject.transform, false);
                     newTileComponent.transform.localPosition = new Vector3(ix*0.5f-moveXposition, -iy * (Mathf.Sqrt(3) / 2)+moveYposition, 0);
                     if (rotateFirst)
                     {

@@ -8,12 +8,24 @@ public class PlayerComponent : Abstract
     // FIELDS
     public KeyCode Red, Green, Blue;
 
-    private Directions directionInput;
+    private Cards cardInput;
     private TileComponent activeTile;
     private bool isMoving;
+    private int maxActions;
+    private List<Action> actions;
+
 
 
     // PROPERTIES
+    public List<Action> Actions
+    {
+        get { return actions; }
+    }
+
+    public bool IsReadyForResolvePhase
+    {
+        get { return actions.Count >= maxActions; }
+    }
 
 
 
@@ -22,6 +34,8 @@ public class PlayerComponent : Abstract
     {
         base.Start();
         GameManager.Players.Add(this);
+        actions = new List<Action>();
+        maxActions = 3;
         TryMoveTo(GameManager.Grids.Find(o => o != null).GetTileClosestTo(this.transform.position));
     }
 
@@ -30,7 +44,12 @@ public class PlayerComponent : Abstract
         base.Update();
         ReceiveInput();
         ConsumeInput();
-        GetComponent<SpriteRenderer>().sortingOrder = (int)(-10*transform.position.y);
+        GetComponent<SpriteRenderer>().sortingOrder = (int)(-10 * transform.position.y);
+
+        AddDebugLine(name);
+        for(int i = 0; i < maxActions; i++)
+            AddDebugLine("  " + i + ". " + (actions.Count > i ? actions[i].ToString() : "..."));
+        AddDebugLine();
     }
 
 
@@ -38,38 +57,56 @@ public class PlayerComponent : Abstract
     // METHODS
     private void ReceiveInput()
     {
-        if (Input.GetKeyDown(Red))
-            directionInput = Directions.Red;
-        if (Input.GetKeyDown(Green))
-            directionInput = Directions.Green;
-        if (Input.GetKeyDown(Blue))
-            directionInput = Directions.Blue;
+        if(Input.GetKeyDown(Red))
+            cardInput = Cards.Red;
+        if(Input.GetKeyDown(Green))
+            cardInput = Cards.Green;
+        if(Input.GetKeyDown(Blue))
+            cardInput = Cards.Blue;
     }
 
     private void ConsumeInput()
     {
-        if (directionInput != Directions.None && !isMoving)
-        {
-            TryMoveTo(activeTile.GetNeighbors()[(int)directionInput]);
-        }
 
-        directionInput = Directions.None;
+        //if (cardInput != Cards.None && !isMoving)
+        //  
+
+        if(cardInput != Cards.None)
+            switch(GamePhase)
+            {
+                case Phases.Queue:
+                    TryEnqueue(Cards.Green, cardInput);
+                    break;
+                case Phases.Realtime:
+                    if(!isMoving)
+                        TryMoveTo(activeTile.GetNeighbors()[(int)cardInput]);
+                    break;
+            }
+
+        cardInput = Cards.None;
     }
 
-    private void TryMoveTo(TileComponent targetTileComponent)
+    private void TryEnqueue(Cards a, Cards b)
     {
-        if (targetTileComponent != null)
-            StartCoroutine(SlowlyMoveTo(targetTileComponent));
+        if(actions.Count < maxActions)
+            actions.Add(new Action(a, b));
+
+    }
+
+    public void TryMoveTo(TileComponent targetTile)
+    {
+        if(targetTile != null)
+            StartCoroutine(SlowlyMoveTo(targetTile));
     }
 
     private System.Collections.IEnumerator SlowlyMoveTo(TileComponent targetTileComponent)
     {
-        if (targetTileComponent != null)
+        if(targetTileComponent != null)
         {
             isMoving = true;
-            for (int i = 0; i < 15; i++)
+            for(int i = 0; i < 15; i++)
             {
-                this.transform.position = Vector3.Lerp(this.transform.position, targetTileComponent.transform.position, 0.2f);
+                LerpPositionTowards(targetTileComponent.transform.position, 0.2f);
                 yield return new WaitForSeconds(0.005f);
             }
             isMoving = false;
@@ -79,4 +116,24 @@ public class PlayerComponent : Abstract
         }
     }
 
+    public void ResolveAction(Action action)
+    {
+        switch(action.A)
+        {
+            case Cards.Red:
+                break;
+
+            case Cards.Green:
+                TryMoveTo(activeTile.GetNeighbors()[(int)action.B]);
+                break;
+
+            case Cards.Blue:
+                break;
+        }
+    }
+
+    public void ResetActionsList()
+    {
+        actions.Clear();
+    }
 }

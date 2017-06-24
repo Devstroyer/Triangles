@@ -14,17 +14,10 @@ public class CameraComponent : Abstract
 
         
     // OVERRIDES
-    override protected void Start()
-    {
-        base.Start();
-        GameManager.Cameras.Add(this);
-    }
-
     protected override void Update()
     {
         base.Update();
         LerpPositionTowards(GameManager.PlayersMidpoint, 0.05f);
-        AddDebugLine(transform.position.ToString());
     }
 
 

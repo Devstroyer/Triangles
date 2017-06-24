@@ -6,42 +6,36 @@ using UnityEngine.UI;
 
 public class GameManagerComponent : Abstract
 {
-    // FIELDS
+    // ---------------------------------------------------------------- FIELDS
+    // PUBLIC
+    public GameObject GridPrefab;
     public GameObject PlayerPrefab;
     public GameObject CameraPrefab;
-    public GameObject GridPrefab;
     public GameObject CanvasPrefab;
+    public GameObject PhaseManagerPrefab;
+
+    // READ-ONLY
+    private List<GridComponent> grids;
+    public  List<GridComponent> Grids
+    { get { return grids; } }
 
     private List<PlayerComponent> players;
-    private List<CameraComponent> cameras;
-    private List<GridComponent> grids;
+    public  List<PlayerComponent> Players
+    { get { return players; } }
+
+    private new CameraComponent camera;
+    public      CameraComponent Camera
+    { get { return camera; } }
+
     private CanvasComponent canvas;
+    public  CanvasComponent Canvas
+    { get { return canvas; } }
 
-    private Vector3 playersMidpoint;
-
-
-
-
-
+    private PhaseManagerComponent phaseManager;
+    public  PhaseManagerComponent PhaseManager
+    { get { return phaseManager; } }
 
     // PROPERTIES
-    public List<PlayerComponent> Players
-    {
-        get { return players; }
-    }
-    public List<CameraComponent> Cameras
-    {
-        get { return cameras; }
-    }
-    public List<GridComponent> Grids
-    {
-        get { return grids; }
-    }
-    public CanvasComponent Canvas
-    {
-        get { return canvas; }
-    }
-
     public Vector3 PlayersMidpoint
     {
         get
@@ -60,23 +54,24 @@ public class GameManagerComponent : Abstract
 
 
 
-
-    // OVERRIDES
+    // ---------------------------------------------------------------- METHODS
+    // MONOBEHAVIOUR
     override protected void Start()
     {
         base.Start();
+
         players = new List<PlayerComponent>();
-        cameras = new List<CameraComponent>();
         grids = new List<GridComponent>();
 
-        canvas = Instantiate(CanvasPrefab).GetComponent<CanvasComponent>();
-        
+        camera = Instantiate(CameraPrefab).GetComponent<CameraComponent>();
+        camera.transform.SetParent(this.transform);
 
+        canvas = Instantiate(CanvasPrefab).GetComponent<CanvasComponent>();
+        canvas.transform.SetParent(this.transform);
+
+        phaseManager = Instantiate(PhaseManagerPrefab).GetComponent<PhaseManagerComponent>();
+        phaseManager.transform.SetParent(this.transform);
     }
 
-
-
-    // METHODS
-
-
+    
 }

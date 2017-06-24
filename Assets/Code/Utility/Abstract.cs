@@ -5,33 +5,30 @@ using UnityEngine;
 
 public abstract class Abstract : MonoBehaviour
 {
-    // FIELDS
+    // ---------------------------------------------------------------- FIELDS
+    // READ-ONLY
     static private GameManagerComponent gameManager;
+    public GameManagerComponent GameManager
+    { get { return gameManager; } }
+
     private float startTime;
-
-
+    public float StartTime
+    { get { return startTime; } }
 
     // PROPERTIES
-    public float StartTime
-    {
-        get { return startTime; }
-    }
-
     public float ElapsedTime
     {
         get { return Time.time - startTime; }
     }
-
-    public GameManagerComponent GameManager
+    public Phases GamePhase
     {
-        get { return gameManager; }
+        get { return GameManager.PhaseManager.GamePhase; }
     }
 
 
 
-    // OVERRIDES
-    virtual public void Rebuild() { }
-
+    // ---------------------------------------------------------------- METHODS
+    // MONOBEHAVIOUR
     virtual protected void Start()
     {
         gameManager = FindObjectOfType<GameManagerComponent>();
@@ -42,16 +39,19 @@ public abstract class Abstract : MonoBehaviour
 
     virtual protected void FixedUpdate() { }
 
+    // OTHER
+    virtual public void Rebuild() { }
 
-
-    // METHODS
-    protected void AddDebugLine(string text)
-    {
-        gameManager.Canvas.DebugLog.AddLine(text);
-    }
+    protected void AddDebugLine(string text = "")
+    { gameManager.Canvas.DebugLog.AddLine(text); }
 
     protected void LerpPositionTowards(Vector3 target, float speed)
-    {
-        this.transform.position = Vector3.Lerp(this.transform.position, target, speed);
-    }
+    { this.transform.position = Vector3.Lerp(this.transform.position, target, speed); }
+
+    protected void LerpRotationTowards(Quaternion target, float speed)
+    { this.transform.rotation = Quaternion.Lerp(this.transform.rotation, target, speed); }
+
+    protected void LerpScaleTowards(Vector3 target, float speed)
+    { this.transform.localScale = Vector3.Lerp(this.transform.localScale, target, speed); }
+
 }

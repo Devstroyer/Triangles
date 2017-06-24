@@ -5,37 +5,19 @@ using UnityEngine;
 
 public class Template : Abstract
 {
-    // FIELDS
+    // ---------------------------------------------------------------- FIELDS
+    // PUBLIC
+    // READ-ONLY
+    // PRIVATE
 
 
 
-    // PROPERTIES
+    // ---------------------------------------------------------------- METHODS
+    // MONOBEHAVIOUR
+    // OTHER
 
 
 
-    // OVERRIDES
-    override public void Rebuild()
-    {
-        base.Rebuild();
-    }
-
-    override protected void Start()
-    {
-        base.Start();
-    }
-
-    override protected void Update()
-    {
-        base.Update();
-    }
-
-    override protected void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
-
-
-    // METHODS
+    // ---------------------------------------------------------------- OVERLOADS
 
 }
