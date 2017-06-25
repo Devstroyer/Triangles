@@ -6,20 +6,12 @@ using UnityEngine;
 public class GridComponent : Abstract
 {
     // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
-    // Public prefab, so GridComponent knows how Tiles look like
-    public GameObject TilePrefab;
-
-    // Public grid radius or in-editor construction
-    public int Radius;
+    public GameObject TilePrefab = null;
+    public int Radius = 8;
 
     private bool[][] boolMap;    // get rid of ?
     public List<TileComponent> tiles;   // Doesn't work when private because of Rebuild() :O INVESTIGATE!!!
-    private int maxDirections;
-    private float[] directionAngles;   // Could belong to TileComponent for ULTIMATE customizability
-    private float maxNeighborDistance;
-    private float maxAngleHalfError;
 
-    private int maxRadius;
 
 
 
@@ -31,10 +23,7 @@ public class GridComponent : Abstract
     override public void Rebuild()
     {
         base.Rebuild();
-
-        maxRadius = 16;
-        Radius = Mathf.Clamp(Radius, 1, maxRadius);
-        
+        Radius = Mathf.Clamp(Radius, 1, 16);
         Clear();
         BuildMap();
         BuildTriangles();
@@ -43,18 +32,7 @@ public class GridComponent : Abstract
     override protected void Start()
     {
         base.Start();
-
-        // Collect self
         GameManager.Grids.Add(this);
-
-        maxDirections = 3;
-        directionAngles = new float[maxDirections + 1];
-        directionAngles[(int)Cards.Red] = 30;
-        directionAngles[(int)Cards.Green] = 150;
-        directionAngles[(int)Cards.Blue] = 270;
-
-        maxNeighborDistance = Mathf.Sqrt(3) / 3 * 1.1f;
-        maxAngleHalfError = 15;
     }
 
 
@@ -83,27 +61,27 @@ public class GridComponent : Abstract
     public TileComponent[] GetNeighborsOf(TileComponent targetTile)
     {
         // Initialize a neighbors array with an extra element for None enum value
-        TileComponent[] neighbors = new TileComponent[maxDirections + 1];
+        TileComponent[] neighbors = new TileComponent[GS.DirectionAngles.Length];
 
         // Iterate through all tiles ...
         foreach(TileComponent neighborTile in tiles)
-        
-            // ... to find those that are within maxNeighborDistance from targetTile ...
-            if(neighborTile != targetTile && Vector3.Distance(targetTile.transform.position, neighborTile.transform.position) < maxNeighborDistance)
-                        
+
+            // ... to find those that are within GS.MaxNeighborDistance from targetTile ...
+            if(neighborTile != targetTile && Vector3.Distance(targetTile.transform.position, neighborTile.transform.position) < GS.MaxNeighborDistance)
+            
                 // ... then iterate through all directions ...
-                for(int i = 1; i <= maxDirections; i++)
-                
+                for(int i = 1; i < GS.DirectionAngles.Length; i++)
+
                     // ... to find whether the neighbor is in any of the predefined directions (relative to targetTile)
-                    if(targetTile.GetRelativeAngleTo(neighborTile).GetDistanceTo(directionAngles[i]) < maxAngleHalfError)
+                    if(targetTile.GetRelativeAngleTo(neighborTile).GetDistanceTo(GS.DirectionAngles[i]) < GS.MaxAngleHalfError)
                     {
                         neighbors[i] = neighborTile;
                         break;
                     }
-                
+
         return neighbors;
     }
-    
+
     // Clears the grid to a blank state
     private void Clear()
     {

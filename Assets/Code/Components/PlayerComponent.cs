@@ -6,26 +6,23 @@ using UnityEngine;
 public class PlayerComponent : Abstract
 {
     // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
-    public KeyCode Red, Green, Blue;
+    public KeyCode Red = KeyCode.LeftArrow;
+    public KeyCode Green = KeyCode.DownArrow;
+    public KeyCode Blue = KeyCode.UpArrow;
 
     private List<Action> actions;
     public List<Action> Actions
-    {
-        get { return actions; }
-    }
+    { get { return actions; } }
 
     private Cards cardInput;
     private TileComponent activeTile;
     private bool isMoving;
-    private int maxActions;
 
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- PROPERTIES
     public bool IsReadyForResolvePhase
-    {
-        get { return actions.Count >= maxActions; }
-    }
+    { get { return actions.Count >= GS.MaxActions; } }
 
 
 
@@ -35,7 +32,6 @@ public class PlayerComponent : Abstract
         base.Start();
         GameManager.Players.Add(this);
         actions = new List<Action>();
-        maxActions = 3;
         TryMoveTo(GameManager.Grids.Find(o => o != null).GetTileClosestTo(this.transform.position));
     }
 
@@ -47,12 +43,9 @@ public class PlayerComponent : Abstract
         ReceiveInput();
         ConsumeInput();
 
-        // Fix sprite sorting order
-        GetComponent<SpriteRenderer>().sortingOrder = (int)(-10 * transform.position.y);
-
         // Debug
         AddDebugLine(name);
-        for(int i = 0; i < maxActions; i++)
+        for(int i = 0; i < GS.MaxActions; i++)
             AddDebugLine("  " + i + ". " + (actions.Count > i ? actions[i].ToString() : "..."));
         AddDebugLine();
     }
@@ -60,6 +53,31 @@ public class PlayerComponent : Abstract
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- METHODS
+    public void TryMoveTo(TileComponent targetTile)
+    {
+        if(targetTile != null)
+            StartCoroutine(SlowlyMoveTo(targetTile));
+    }
+
+    public void ResolveAction(Action action)
+    {
+        switch(action.A)
+        {
+            case Cards.Red:
+                break;
+
+            case Cards.Green:
+                TryMoveTo(activeTile.GetNeighbors()[(int)action.B]);
+                break;
+
+            case Cards.Blue:
+                break;
+        }
+    }
+
+    public void ResetActionsQueue()
+    { actions.Clear(); }
+
     private void ReceiveInput()
     {
         if(Input.GetKeyDown(Red))
@@ -90,15 +108,8 @@ public class PlayerComponent : Abstract
 
     private void TryEnqueue(Cards a, Cards b)
     {
-        if(actions.Count < maxActions)
+        if(actions.Count < GS.MaxActions)
             actions.Add(new Action(a, b));
-
-    }
-
-    public void TryMoveTo(TileComponent targetTile)
-    {
-        if(targetTile != null)
-            StartCoroutine(SlowlyMoveTo(targetTile));
     }
 
     private System.Collections.IEnumerator SlowlyMoveTo(TileComponent targetTileComponent)
@@ -118,24 +129,5 @@ public class PlayerComponent : Abstract
         }
     }
 
-    public void ResolveAction(Action action)
-    {
-        switch(action.A)
-        {
-            case Cards.Red:
-                break;
 
-            case Cards.Green:
-                TryMoveTo(activeTile.GetNeighbors()[(int)action.B]);
-                break;
-
-            case Cards.Blue:
-                break;
-        }
-    }
-
-    public void ResetActionsList()
-    {
-        actions.Clear();
-    }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class Abstract : MonoBehaviour
 {
     // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
-    static private GameManagerComponent gameManager;
+    private GameManagerComponent gameManager;
     public GameManagerComponent GameManager
     { get { return gameManager; } }
 
@@ -19,20 +19,20 @@ public abstract class Abstract : MonoBehaviour
     // -------------------------------------------------------------------------------------------------------------------------------- PROPERTIES
     // Returns how long the object has been alive
     public float ElapsedTime
-    {
-        get { return Time.time - startTime; }
-    }
-    // Shortcut for reading current GamePhase
+    { get { return Time.time - startTime; } }
+
+    // Shortcuts for reading current GameSettings and GamePhase
     public Phases GamePhase
-    {
-        get { return GameManager.PhaseManager.GamePhase; }
-    }
+    { get { return GameManager.PhaseManager.GamePhase; } }
+
+    public GameSettingsComponent GS
+    { get { return GameManager.GameSettings; } }
 
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- MONO
     // Called in editor whenever anything is changed in the inspector. Not really Mono, but let's pretend!
-    virtual public void Rebuild() { }   
+    virtual public void Rebuild() { }
 
     // Called before the first Update()
     virtual protected void Start()
@@ -55,13 +55,13 @@ public abstract class Abstract : MonoBehaviour
     { gameManager.Canvas.DebugLog.AddLine(text); }
 
     // Convenient transform lerps
-    protected void LerpPositionTowards(Vector3 target, float speed)
+    public void LerpPositionTowards(Vector3 target, float speed)
     { this.transform.position = Vector3.Lerp(this.transform.position, target, speed); }
 
-    protected void LerpRotationTowards(Quaternion target, float speed)
+    public void LerpRotationTowards(Quaternion target, float speed)
     { this.transform.rotation = Quaternion.Lerp(this.transform.rotation, target, speed); }
 
-    protected void LerpScaleTowards(Vector3 target, float speed)
+    public void LerpScaleTowards(Vector3 target, float speed)
     { this.transform.localScale = Vector3.Lerp(this.transform.localScale, target, speed); }
 
 }

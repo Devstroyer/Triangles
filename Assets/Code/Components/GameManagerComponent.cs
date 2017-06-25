@@ -8,13 +8,18 @@ public class GameManagerComponent : Abstract
 {
     // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
     // Public references to in-editor Prefabs so GameManager knows what to spawn
-    public GameObject GridPrefab;
-    public GameObject PlayerPrefab;
-    public GameObject CameraPrefab;
-    public GameObject CanvasPrefab;
-    public GameObject PhaseManagerPrefab;
+    public GameObject GameSettingsPrefab = null;
+    public GameObject GridPrefab = null;
+    public GameObject PlayerPrefab = null;
+    public GameObject CameraPrefab = null;
+    public GameObject CanvasPrefab = null;
+    public GameObject PhaseManagerPrefab = null;
 
     // Read-only references to core gameplay components
+    private GameSettingsComponent gameSettings;
+    public GameSettingsComponent GameSettings
+    { get { return gameSettings; } }
+
     private List<GridComponent> grids;
     public List<GridComponent> Grids
     { get { return grids; } }
@@ -45,13 +50,13 @@ public class GameManagerComponent : Abstract
         {
             Vector3 midpoint = Vector3.zero;
             int count = 0;
-            foreach(PlayerComponent iterator in players)
+            foreach(PlayerComponent iterator in players.FindAll(o => o.isActiveAndEnabled))
             {
                 midpoint += iterator.transform.position;
                 count++;
             }
 
-            return midpoint / count; ;
+            return midpoint / Mathf.Max(1, count);
         }
     }
 
@@ -67,14 +72,17 @@ public class GameManagerComponent : Abstract
         grids = new List<GridComponent>();
 
         // Spawn, save references to and become the parent of some singular components
-        camera = Instantiate(CameraPrefab).GetComponent<CameraComponent>();
-        camera.transform.SetParent(this.transform);
+        gameSettings = Instantiate(GameSettingsPrefab).GetComponent<GameSettingsComponent>();
+        gameSettings.transform.SetParent(this.transform);
+
+        phaseManager = Instantiate(PhaseManagerPrefab).GetComponent<PhaseManagerComponent>();
+        phaseManager.transform.SetParent(this.transform);
 
         canvas = Instantiate(CanvasPrefab).GetComponent<CanvasComponent>();
         canvas.transform.SetParent(this.transform);
 
-        phaseManager = Instantiate(PhaseManagerPrefab).GetComponent<PhaseManagerComponent>();
-        phaseManager.transform.SetParent(this.transform);
+        camera = Instantiate(CameraPrefab).GetComponent<CameraComponent>();
+        camera.transform.SetParent(this.transform);
     }
 
 

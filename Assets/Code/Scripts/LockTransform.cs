@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LockTransform : MonoBehaviour
+public class LockTransform : Abstract
 {
     public bool PositionX, PositionY, PositionZ;
     public bool RotationX, RotationY, RotationZ;
@@ -12,9 +12,10 @@ public class LockTransform : MonoBehaviour
     private float initialRotationX, initialRotationY, initialRotationZ;
     private float initialLocalScaleX, initialLocalScaleY, initialLocalScaleZ;
 
-	void Start ()
+    protected override void Start()
     {
-		initialPositionX = transform.position.x;
+        base.Start();
+        initialPositionX = transform.position.x;
         initialPositionY = transform.position.y;
         initialPositionZ = transform.position.z;
 
@@ -25,13 +26,14 @@ public class LockTransform : MonoBehaviour
         initialLocalScaleX = transform.localScale.x;
         initialLocalScaleY = transform.localScale.y;
         initialLocalScaleZ = transform.localScale.z;
-	}
-	
-	void Update ()
+    }
+
+    protected override void Update()
     {
+        base.Update();
         transform.position = new Vector3(PositionX ? initialPositionX : transform.position.x,
-                                         PositionY ? initialPositionY : transform.position.y,
-                                         PositionZ ? initialPositionZ : transform.position.z);
+                                             PositionY ? initialPositionY : transform.position.y,
+                                             PositionZ ? initialPositionZ : transform.position.z);
 
         transform.eulerAngles = new Vector3(RotationX ? initialRotationX : transform.eulerAngles.x,
                                             RotationY ? initialRotationY : transform.eulerAngles.y,
@@ -40,5 +42,5 @@ public class LockTransform : MonoBehaviour
         transform.localScale = new Vector3(LocalScaleX ? initialLocalScaleX : transform.localScale.x,
                                            LocalScaleY ? initialLocalScaleY : transform.localScale.y,
                                            LocalScaleZ ? initialLocalScaleZ : transform.localScale.z);
-	}
+    }
 }

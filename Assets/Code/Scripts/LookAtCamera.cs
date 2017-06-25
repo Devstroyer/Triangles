@@ -3,12 +3,9 @@ using UnityEngine;
 
 
 
-public class TileComponent : Abstract
+public class LookAtCamera : Abstract
 {
     // -------------------------------------------------------------------------------------------------------------------------------- FIELDS
-    private GridComponent parentGrid;
-    public GridComponent ParentGrid
-    { get { return parentGrid; } }
 
 
 
@@ -17,18 +14,21 @@ public class TileComponent : Abstract
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- MONO
-    protected override void Start()
+    protected override void Update()
     {
-        base.Start();
-        parentGrid = transform.parent.gameObject.GetComponent<GridComponent>();
+        base.Update();
+
+        this.transform.rotation = GameManager.Camera.transform.rotation;
+
+        foreach(SpriteRenderer sprite in GetComponents<SpriteRenderer>())
+            sprite.sortingOrder = (int)(-100 * Vector3.Distance(GameManager.Camera.transform.position, this.transform.position));
     }
+
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- METHODS
-    public TileComponent[] GetNeighbors()
-    {
-        return parentGrid.GetNeighborsOf(this);
-    }
-
 
 }
+
+
+
