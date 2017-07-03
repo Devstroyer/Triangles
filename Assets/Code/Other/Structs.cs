@@ -3,12 +3,12 @@ using UnityEngine;
 
 
 
-public struct Action
+public struct Order
 {
-    public Cards A;
-    public Cards B;
+    public Actions A;
+    public Directions B;
 
-    public Action(Cards a, Cards b)
+    public Order(Actions a, Directions b)
     {
         A = a;
         B = b;

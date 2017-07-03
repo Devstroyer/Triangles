@@ -2,15 +2,6 @@
 using UnityEngine;
 
 
-public enum Cards
-{
-    None = 0,
-    Red = 1,
-    Green = 2,
-    Blue = 3,
-}
-
-
 
 public enum Phases
 {
@@ -19,3 +10,21 @@ public enum Phases
     Resolve = 2,
     Realtime = 3,
 }
+
+public enum Directions
+{
+    None = 0,
+    Red = 1,
+    Green = 2,
+    Blue = 3,
+}
+
+public enum Actions
+{
+    None = 0,
+    Custom = 1,
+    Attack = 2,
+    Move = 3,
+    Draw = 4,
+}
+

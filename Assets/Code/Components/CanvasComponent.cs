@@ -31,7 +31,7 @@ public class CanvasComponent : Abstract
     private void InitializeDebugLog()
     {
         debugLog = Instantiate(DebugLogPrefab).GetComponent<DebugLogComponent>();
-        debugLog.transform.SetParent(transform);
+        debugLog.transform.SetParent(this.transform, false);
     }
 
 

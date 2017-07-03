@@ -9,11 +9,10 @@ static public class Utility
     // Method
     static public float GetRelativeAngleBetween(Abstract a, Abstract b)
     {
-        Vector2 lookAtNeighbor = a.transform.position - b.transform.position;
-        float rawAngle = Utility.CcwAngleBetween(Vector2.right, lookAtNeighbor);
-        float modifiedAngle = Utility.PosMod(rawAngle - b.transform.eulerAngles.z, 360);
+        float angle = Utility.CcwAngleBetween(Vector2.right, b.transform.position - a.transform.position);
+        angle -= Utility.PosMod(a.transform.eulerAngles.z, 360);
 
-        return modifiedAngle;
+        return Utility.PosMod(angle, 360);
     }
 
     // Abstract Extension
@@ -37,6 +36,19 @@ static public class Utility
         return GetDistanceBetween(a, b);
     }
 
+    // -------------------------------------------------------------------------------------------------------------------------------- GetNearestMultiple (float)
+    // Method
+    static public float GetNearestMultipleOf(float a, float multiple)
+    {
+        return Mathf.Round(a/multiple) * multiple;
+    }
+
+    // float Extentsion
+    static public float GetNearestMultiple(this float a, float multiple)
+    {
+        return GetNearestMultipleOf(a, multiple);
+    }
+
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- Various
@@ -48,9 +60,7 @@ static public class Utility
     static public float CcwAngleBetween(Vector2 from, Vector2 to)
     {
         float angle = (Mathf.Atan2(to.y, to.x) - Mathf.Atan2(from.y, from.x)) * Mathf.Rad2Deg;
-        angle += angle < 0 ? 360 : 0;
-        angle %= 360;
-        return angle;
+        return PosMod(angle, 360);
     }
 
     static public void LerpTowards(this Vector3 start, Vector3 target, float speed)

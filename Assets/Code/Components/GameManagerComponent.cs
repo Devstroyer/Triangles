@@ -63,7 +63,7 @@ public class GameManagerComponent : Abstract
 
 
     // -------------------------------------------------------------------------------------------------------------------------------- MONO
-    override protected void Start()
+    protected void Awake()   // <--- special case
     {
         base.Start();
 

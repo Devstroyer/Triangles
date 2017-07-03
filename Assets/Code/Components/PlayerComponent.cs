@@ -10,11 +10,11 @@ public class PlayerComponent : Abstract
     public KeyCode Green = KeyCode.DownArrow;
     public KeyCode Blue = KeyCode.UpArrow;
 
-    private List<Action> actions;
-    public List<Action> Actions
-    { get { return actions; } }
+    private List<Order> orders;
+    public List<Order> Orders
+    { get { return orders; } }
 
-    private Cards cardInput;
+    private Directions directionInput;
     private TileComponent activeTile;
     private bool isMoving;
 
@@ -22,7 +22,7 @@ public class PlayerComponent : Abstract
 
     // -------------------------------------------------------------------------------------------------------------------------------- PROPERTIES
     public bool IsReadyForResolvePhase
-    { get { return actions.Count >= GS.MaxActions; } }
+    { get { return orders.Count >= GS.MaxActions; } }
 
 
 
@@ -31,7 +31,7 @@ public class PlayerComponent : Abstract
     {
         base.Start();
         GameManager.Players.Add(this);
-        actions = new List<Action>();
+        orders = new List<Order>();
         TryMoveTo(GameManager.Grids.Find(o => o != null).GetTileClosestTo(this.transform.position));
     }
 
@@ -46,9 +46,25 @@ public class PlayerComponent : Abstract
         // Debug
         AddDebugLine(name);
         for(int i = 0; i < GS.MaxActions; i++)
-            AddDebugLine("  " + i + ". " + (actions.Count > i ? actions[i].ToString() : "..."));
+            AddDebugLine("  " + i + ". " + (orders.Count > i ? orders[i].ToString() : "..."));
         AddDebugLine();
+
+        // Draw 
+        /*
+        if(activeTile != null)
+        {
+            TileComponent[] neighbors = activeTile.GetNeighbors();
+            for(int i = 1; i < GS.DirectionAngles.Length; i++)
+                if(neighbors[i] != null)
+                    for(int j = -5; j <= 5; j++)
+                    {
+                        Vector3 rotatedDiff = Quaternion.AngleAxis(GS.MaxAngleHalfError * j / 5, Vector3.forward) * (neighbors[i].transform.position - activeTile.transform.position);
+                        Debug.DrawLine(activeTile.transform.position, activeTile.transform.position + rotatedDiff, GS.DirectionColors[i]);
+                    }
+        }
+        */
     }
+
 
 
 
@@ -59,75 +75,73 @@ public class PlayerComponent : Abstract
             StartCoroutine(SlowlyMoveTo(targetTile));
     }
 
-    public void ResolveAction(Action action)
+    public void ResolveAction(Order action)
     {
         switch(action.A)
         {
-            case Cards.Red:
+            case Actions.Attack:
                 break;
 
-            case Cards.Green:
+            case Actions.Move:
                 TryMoveTo(activeTile.GetNeighbors()[(int)action.B]);
                 break;
 
-            case Cards.Blue:
+            case Actions.Draw:
                 break;
         }
     }
 
     public void ResetActionsQueue()
-    { actions.Clear(); }
+    { orders.Clear(); }
 
     private void ReceiveInput()
     {
         if(Input.GetKeyDown(Red))
-            cardInput = Cards.Red;
+            directionInput = Directions.Red;
         if(Input.GetKeyDown(Green))
-            cardInput = Cards.Green;
+            directionInput = Directions.Green;
         if(Input.GetKeyDown(Blue))
-            cardInput = Cards.Blue;
+            directionInput = Directions.Blue;
     }
 
     private void ConsumeInput()
     {
-        if(cardInput != Cards.None)
+        if(directionInput != Directions.None)
             switch(GamePhase)
             {
                 case Phases.Queue:
-                    TryEnqueue(Cards.Green, cardInput);
+                    TryEnqueue(Actions.Move, directionInput);
                     break;
 
                 case Phases.Realtime:
                     if(!isMoving)
-                        TryMoveTo(activeTile.GetNeighbors()[(int)cardInput]);
+                        TryMoveTo(activeTile.GetNeighbors()[(int)directionInput]);
                     break;
             }
 
-        cardInput = Cards.None;
+        directionInput = Directions.None;
     }
 
-    private void TryEnqueue(Cards a, Cards b)
+    private void TryEnqueue(Actions a, Directions b)
     {
-        if(actions.Count < GS.MaxActions)
-            actions.Add(new Action(a, b));
+        if(orders.Count < GS.MaxActions)
+            orders.Add(new Order(a, b));
     }
 
-    private System.Collections.IEnumerator SlowlyMoveTo(TileComponent targetTileComponent)
+    private System.Collections.IEnumerator SlowlyMoveTo(TileComponent targetTile)
     {
-        if(targetTileComponent != null)
+        if(targetTile != null)
         {
             isMoving = true;
             for(int i = 0; i < 15; i++)
             {
-                LerpPositionTowards(targetTileComponent.transform.position, 0.2f);
+                LerpPositionTowards(targetTile.transform.position, 0.2f);
                 yield return new WaitForSeconds(0.005f);
             }
             isMoving = false;
 
-            activeTile = targetTileComponent;
+            activeTile = targetTile;
             this.transform.position = activeTile.transform.position;
         }
     }
-
-
 }

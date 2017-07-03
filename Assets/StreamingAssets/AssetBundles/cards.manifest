@@ -1,0 +1,25 @@
+ManifestFileVersion: 0
+CRC: 2728334438
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 2e27d573eb473a8788772b876427d9cc
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 4774d6da9b606debf00b5a5d61c4487c
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/Graphics/Sprites/Cards/Actions/Draw.png
+- Assets/Graphics/Sprites/Cards/Other/Cost2.png
+- Assets/Graphics/Sprites/Cards/Other/Attack.png
+- Assets/Graphics/Sprites/Cards/Actions/Attack.png
+- Assets/Graphics/Sprites/Cards/Other/Background.png
+- Assets/Graphics/Sprites/Cards/Other/Cost1.png
+- Assets/Graphics/Sprites/Cards/Actions/Move.png
+- Assets/Graphics/Sprites/Cards/Other/Cost3.png
+Dependencies: []

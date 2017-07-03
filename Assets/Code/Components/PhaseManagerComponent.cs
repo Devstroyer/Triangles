@@ -67,15 +67,15 @@ public class PhaseManagerComponent : Abstract
     {
         int longestActionQueue = 0;
         foreach(PlayerComponent player in GameManager.Players)
-            if(player.Actions.Count > longestActionQueue)
-                longestActionQueue = player.Actions.Count;
+            if(player.Orders.Count > longestActionQueue)
+                longestActionQueue = player.Orders.Count;
 
         for(int i = 0; i < longestActionQueue; i++)
             foreach(PlayerComponent player in GameManager.Players)
-                if(player.Actions.Count > i)
+                if(player.Orders.Count > i)
                 {
                     isResolvingAction = true;
-                    player.ResolveAction(player.Actions[i]);
+                    player.ResolveAction(player.Orders[i]);
                     yield return new WaitForSeconds(0.5f);
                     isResolvingAction = false;
                 }
